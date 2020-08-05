@@ -2,15 +2,18 @@ const postcss = require('postcss');
 
 
 
-module.exports = (plugins = [], options = {}) => ({ registerFilePlugin }) => {
+module.exports = (plugins = [], options = {}) => (plugin) => {
 
   const {rule, ...config} = options;
   const ps = postcss(plugins);
 
-  registerFilePlugin(options.rule || '**/*.css', async (path, buffer, next) => {
-    const result = await ps.process(buffer, Object.assign({from: path, to: path}, options));
-    if (result.map) await next(path + '.map', result.map);
-    return next(path, result.css);
+  plugin.registerFileHandler(options.rule || '**/*.css', async ({path, file}) => {
+    const result = await ps.process(file, {from: path, to: path, ...config});
+    let output = {path, file: result.css};
+    if (result.map) {
+      output = [output, {path: path + '.map', file: result.map}]
+    }
+    return output;
   });
 
 }
