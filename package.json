@@ -6,6 +6,6 @@
   "author": "Cameron Spencer <cameron@lab43.com> (https://www.lab43.com)",
   "license": "ISC",
   "dependencies": {
-    "postcss": "^7.0.35"
+    "postcss": "^8.4.1"
   }
 }
